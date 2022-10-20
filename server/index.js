@@ -12,18 +12,17 @@ const app = express();
 app.get('/google', async (req, res) => {
     const {code} = req.query;
 
-
     // https://developers.google.com/google-ads/api/docs/best-practices/common-errors
     try {
         const url = `https://www.googleapis.com/oauth2/v3/token?code=${code}&client_id=${GOOGLE_CLIENT_ID}&client_secret=${GOOGLE_CLIENT_SECRET}&grant_type=authorization_code&redirect_uri=${encodeURIComponent('http://localhost:8080/google')}`;
         
         const response = await axios.post(url) 
 
-        console.log(response.data);
-
         const userInfo = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${response.data.access_token}`)
 
         console.log(userInfo.data)
+
+        res.redirect("http://localhost:3000")
 
     } catch (error) {
         console.log(error.response)
@@ -32,8 +31,6 @@ app.get('/google', async (req, res) => {
 
 app.get('/facebook', async (req, res) => {
     const {code} = req.query;
-
-    console.log(code);
 
     try {
         const response = await axios.post(
